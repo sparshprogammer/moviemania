@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% block body %}
+{% url 'profile' %}
+
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body{
+            margin-top: 0px;
+        }
+        .container{
+            margin: auto;
+            width: 1000px;
+            height: 200px;
+            background-color: gainsboro;
+        }
+        .profilepic {
+            float: left;
+            height: 150px;
+            width: 100px;
+            margin-left: 50px;
+            margin-top: 20px;
+
+        }
+        .profilepic alt{
+            text:none;
+            border: none;
+            display: none;
+        }
+        .logout{
+            float:right;
+            text-decoration: none;
+            display:inline;
+            margin-right: 20px;
+        }
+        .logout a{
+            display: inline;
+            text-decoration:none;
+
+        }
+        .container h1
+        {
+            padding-left: 250px;
+            padding-top: 50px;
+
+
+        }
+        .statuscontainer{
+            width: 1000px;
+            height:auto;
+            margin: auto;
+            background-color: royalblue;
+            padding-top: 1px;
+
+        }
+        .status{
+            margin-left: 50px;
+        }
+        .status2 a{
+            text-decoration: none;
+            color: black;
+        }
+        img{
+            float: left;
+        }
+        .time{
+            font-size: 10px;
+        }
+        .status2{
+            border: solid;
+            border-color: #fdffd4;
+            border-width: 1px;
+            margin-left: 200px;
+            margin-right: 500px;
+            margin-top: 2px;
+            margin-bottom: 2px;
+            padding-left: 0px;
+        }
+        .status2 img{
+            width:40px;
+            height: 40px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+{% if user.is_authenticated %}
+    {% if profile_pic %}
+        {% for status in profile_pic %}
+            <img class="profilepic" src="{{ MEDIA_URL }}{{ status.picture }}" alt="" />
+
+        {% endfor %}
+        {% endif %}
+        <h1>{{ user.first_name }} {{ user.last_name }}</h1>
+    <div class="logout">
+    <h2><a href="/logout/">Logout</a></h2>
+    </div>
+
+{% endif %}
+</div>
+<div class="statuscontainer">
+    {% if status_update_user %}
+
+            {% for Status in status_update_user %}
+                <div class="status2">
+                {% if profile_pic %}
+                    {% for status_pic in profile_pic %}
+                        <img class="profilepic" src="{{ MEDIA_URL }}{{ status_pic.picture }}" alt="" />
+               <h2><a href="../profile/">{{ Status.posted_by }}</a>
+                   <div class="time">{{ Status.created_on }}</div></h2>
+            <div class="status"><h3>{{ Status.status }}</h3></div>
+                {% endfor %}
+                {% endif %}
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+More
+    </div>
+
+</body>
+</html>
+{% endblock %}

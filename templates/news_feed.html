@@ -1,0 +1,11 @@
+{% if user.is_authenticated %}
+{% if all_friend %}
+{% for friend_list in all_friend %}
+    {{ friend_list.request_from_friend }}
+{% endfor %}
+{% endif %}
+
+    {% for r in request_from_friend.friendship_request_set.all %}
+        {{ r.action_user }}{{ r.last_name }}
+    {% endfor %}
+{% endif %}

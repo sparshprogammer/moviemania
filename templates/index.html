@@ -1,0 +1,32 @@
+{% extends 'base/base.html' %}
+<!--<link rel="stylesheet" href="{ "css/css.css" %}" />
+<link rel="stylesheet" href=" "css/bootstrap.min.css" %}" />-->
+<!DOCTYPE html>
+<html>
+
+
+<title>Home</title>
+
+
+
+<head>
+<link rel="stylesheet" href="{{ STATIC_URL }}css/style.css" />
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js?ver=1.4.2"></script>
+<script src="{{ STATIC_URL }}js/login.js"></script>
+</head>
+<body>
+<div class="content">
+{% if user.is_authenticated %}
+
+    <h1><a href="/logout/">Logout</a><br /></h1>
+    <h1>Welcome {{ user.username }} have a nice day.</h1>
+
+    <form id ="status_update_form" method="post" action="index.html">
+    {% csrf_token %}
+
+    {{ status_update_form.as_p }}
+    </form>
+    </div>
+{% endif %}
+</body>
+</html>

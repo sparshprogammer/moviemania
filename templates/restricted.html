@@ -1,0 +1,479 @@
+{% include 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Restricted</title>
+    <link rel="stylesheet"  href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/star-rating.css" media="all" rel="stylesheet" type="text/css"/>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="{{ STATIC_URL }}js/notify.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<!--Dropdrown notification-->
+<style>
+
+.dropbtn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #f9f9f9;
+    min-width: 330px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown:hover .dropbtn {
+    background-color: #3e8e41;}
+
+    .sparsh .btn-group{
+        display: inline-block;
+    }
+
+    .sparsh{
+        margin-top:8px;
+        margin-bottom: 8px;
+    }
+    .sparsh a{
+        align-items:center;
+    }
+</style>
+<style>
+    #friend_container{
+        margin-left: 10px;
+        margin-top: 50px;
+    }
+    #friend_request{
+        border: solid;
+        border-width: 1px;
+        display: inline;
+        background-color: #899caa;
+        height: 200px;
+        width: 200px;
+    }
+    .black{
+        color: black;
+    }
+    a{
+        text-decoration: none;
+    }
+     @media (min-width: 400px) and (max-width: 500px) {
+      #myCarousel .carousel-inner .item .item-item:last-child {
+        display: none;
+      }
+   }
+@media (max-width: 400px) {
+     #mymyCarousel .carousel-inner {
+      height: 320px;
+    }
+ }
+.carousel-inner {
+  overflow-y: hidden;
+}
+.carousel-inner .active.left { left: -25%; }
+.carousel-inner .next        { left:  25%; }
+.carousel-inner .prev    { left: -25%; }
+.carousel-control        { width:  4%; }
+.carousel-control.left,.carousel-control.right {margin-left:-30px;margin-right:-30px;background-image:none;}
+.carousel-inner .item-item {
+  padding:0!important;
+}
+
+
+    .container{
+
+width:225px;
+        margin-left:350px;
+
+    }
+    .thumbnail{
+        width:200px;
+    }
+</style>
+<script>
+   $('#myCarousel').carousel({
+  interval: 10000
+});
+
+$('.carousel .item').each(function(){
+  var next = $(this).next();
+  if (!next.length) {
+    next = $(this).siblings(':first');
+  }
+  next.children(':first-child').clone().appendTo($(this));
+
+  for (var i=0;i<2;i++) {
+    next=next.next();
+    if (!next.length) {
+      next = $(this).siblings(':first');
+    }
+
+    next.children(':first-child').clone().appendTo($(this));
+  }
+});
+</script>
+<body>
+{% if user.is_authenticated %}
+    <!--notification-->
+    <div class="dropdown" style="float:right;">
+  <button class="dropbtn">Freiend Requests <span class="badge">{{ friend_rqst|length }}</span></button>
+
+  <div class="dropdown-content">
+
+      {% for friend_request in friend_rqst %}
+            {% ifequal friend_request.friendship_status 0 %}
+{% for user in users %}{%  ifequal user.pk friend_request.request_from_friend_id %}
+
+    <div class="sparsh" align="center"><div class="row"><div class="col-sm-6"><a href="/restricted/{{ user.pk}}/">{{ user.first_name }} {{ user.last_name }}</a></div>
+    <small>
+    <div class="col-sm-6">
+        <span class="btn-group">
+            <form id="friend_accept_form" method="POST" action="/rest/">
+        {% csrf_token %}
+                    <input type="hidden" name="r_f_f" value="{{ friend_request.request_from_friend_id }}">
+                    <input type="hidden" name="r_t_f" value="{{ friend_request.request_to_friend_id }}">
+            <input type="submit" name="f_a_f" value="Accept">
+        </form>
+        </span>
+        <span class="btn-group">
+            <button class="btn btn-mini">Delete</button>
+        </span></div>
+
+    </small>
+</div>
+    </div>
+    <!--<a href="/restricted/{{ user.pk}}/">{{ user.first_name }} {{ user.last_name }}<span class="btn-group"><a href="" class="btn btn-primary btn-sm" role="button"></a></span></a>-->
+{% endifequal %}
+{% endfor %}
+  {% endifequal %}
+{% endfor %}
+  </div>
+</div>
+    <!--user welcome-->
+  <h1>  {% if nowhour < 12 %}Good Morning{% endif %}{% if nowhour > 19 %}Welcome{% endif %}
+{% if nowhour > 12 and nowhour < 20 %}Good Evening{% endif %} {{ user.first_name }}{% if nowhour < 12 %} have a nice day.{% endif %}</h1>
+
+<div class="container bg-3 text-center">
+<div class="row">
+{% if recommended_movies.count > 0 %}
+    <h4>Recommended Movies for you</h4>
+    {% for rec in recommended_movies %}
+
+        <a href="/movies/{{ rec.id }}/">{{ rec.title }}({{ rec.year }})</a> <br>
+    {% endfor %}
+        {% endif %}
+<h4>People you may know</h4>
+    <div id="myCarouselWrapper" class="container-fluid">
+
+    	 <div id="myCarousel" class="carousel slide">
+
+<div class="carousel-inner">
+
+      {% if friend_suggestion %}
+{% for user in friend_suggestion %}
+
+
+        <div {% if forloop.first %}class="item active" {% else %}class="item" {% endif %}>
+
+        <div class="item-item col-md-4 col-sm-4">
+    <form id="friend_request_form" method="post" action=".">
+    {% csrf_token %}
+
+
+    <div class="thumbnail">
+        <a href="/profile/{{ user.pk }}/">
+            <!--<img src="{{ MEDIA_URL }}{{ pic.picture }}" class="img-responsive" style="width:100%" alt="Image">-->
+        </a>
+    <div class="caption">
+    <h4>{{ user.first_name }} {{ user.last_name }}</h4>
+    <input type="hidden" id="request_to_frnd" name="request_to_frnd" value="{{ user.pk }}"/>
+        <input type="submit" id="send_request" name="send_request" class="btn btn-primary btn-sm" nmae="f_r_f" value="Send Request">
+    <a href="/restrict/{{ user.id }}/" class="btn btn-primary btn-sm" role="button">Remove</a>
+
+
+    </div>
+          </div></form></div></div>
+          {% endfor %}
+  {% endif %}
+</div>
+
+  <!-- Controls -->
+  <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+    <span class="glyphicon glyphicon-chevron-left black" aria-hidden="true"></span>
+    <span class="sr-only">Previous</span>
+  </a>
+  <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+    <span class="glyphicon glyphicon-chevron-right black" aria-hidden="true"></span>
+    <span class="sr-only">Next</span>
+  </a></div>
+    </div>
+</div>
+    </div>
+    <!--<form id="friend_request_for" method="post" action=".">
+        {% csrf_token %}
+
+
+        <input type="submit" name="notif" value="Add Friend" >
+
+    <input id="request_from_friend" type="hidden" name="request_from_friend" value="{{ user.id }}">
+    <input id="request_to_friend" type="hidden" name="request_to_friend" value="{{ user.id }}">
+    </form>-->
+
+<!--
+    <div class="container-fluid bg-3 text-center">
+
+  <div class="row">
+      {% if users %}
+{% for user in users %}
+    {% if user.pk not in friend_list %}
+    <form id="friend_request_form" method="post" action="">
+    {% csrf_token %}
+
+    <div class="col-sm-4 col-lg-2">
+    <div class="thumbnail">
+        <a href="/profile/{{ user.pk }}/">
+            <!--<img src="{{ MEDIA_URL }}{{ pic.picture }}" class="img-responsive" style="width:100%" alt="Image">
+        </a>
+    <div class="caption">
+    <h4>{{ user.first_name }} {{ user.last_name }}</h4>
+    <input type="hidden" id="request_to_frnd" name="request_to_frnd" value="{{ user.pk }}"/>
+        <input type="submit" nmae="f_r_f" value="submit"><a href="/restricted/{{ user.pk }}/" class="btn btn-primary btn-sm" role="button">Send Friend Request</a>
+    <a href="/restrict/{{ user.id }}/" class="btn btn-primary btn-sm" role="button">Remove</a>
+
+</div>
+    </div>
+          </div></form>
+          {% endif %}{% endfor %}
+  {% endif %}
+          </div>
+</div>
+-->
+<div class="notif" ></div>
+<div class="elem-demo">
+<!--Friend Accept Form-->
+    <!--
+        {% for friend_request in friend_rqst %}
+            {% ifequal friend_request.friendship_status 0 %}
+        <h2>{{ friend_request.request_from_friend }} Sends you friend request</h2>
+                <form id="friend_accept_form" method="POST" action="/rest/">
+        {% csrf_token %}
+                    <input type="hidden" name="r_f_f" value="{{ friend_request.request_from_friend_id }}">
+                    <input type="hidden" name="r_t_f" value="{{ friend_request.request_to_friend_id }}">
+            <input type="submit" name="f_a_f" value="Accept">
+        </form>
+            {% endifequal %}
+                {% endfor %}
+-->
+
+            {% ifequal friend_request.friendship_status 1 %}
+        <h2>{{ friend_request.request_from_friend }} is your friend now</h2>
+            {% endifequal %}
+    <style>
+    .statusformcontainer{
+        margin-left:350px;
+        margin-right:320px;
+        background-color: white;
+    }
+    .statusformcontainer2{
+        padding-top:10px ;
+        padding-bottom: 10px;
+        margin:10px;
+    }
+    .statusformcontainer2 .dropbtn{
+        margin-top: 5px;
+        padding-left:280px;
+        padding-right: 277px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+
+    </style>
+    <!--
+    <video width="350" controls>
+    <source src="https://www.youtube.com/watch?v=9ArBgpDCt6w" type="video/mp4"/>
+    Your browser does not support HTML5 video.
+    </video>-->
+    <div class="statusformcontainer">
+    <div class="statusformcontainer2">
+    {% if user.pk in status_user %}
+        <form id ="status_update_form" method="post" action=".">
+    {% csrf_token %}
+
+            <input id="status" name="status" placeholder="Whats Up"/>
+    <button class="dropbtn" role="submit" name="notif" value="Status Update" onclick="$('.elem-demo').notify('Status Updated Successfully','success');">Status Update</button>
+</form>
+    {% endif %}
+</div>
+    </div>
+{% for friend_request in friend_rqst %}
+    {% if status_user in user.id %}
+    {% ifequal friend_request.friendship_status 1 %}
+    <form id ="status_update_form" method="post" action=".">
+    {% csrf_token %}
+
+    {{ status_update_form.as_p }}
+    <input type="submit" name="notif" value="Status Update" onclick="$('.elem-demo').notify('Status Updated Successfully','success');">
+</form>
+    {% endifequal %}
+    {% endif %}
+{% endfor %}
+<style>
+.statuscontainer{
+    margin-left:30px;
+}
+.statuscontainer2
+{
+    margin-left: 320px;
+    margin-right: 320px;
+    margin-top:10px;
+    margin-bottom:10px;
+    background-color: white;
+    padding: 10px;
+}
+.profilepic{
+    width:50px;
+    height:50px;
+    float:left;
+}
+.postedon{
+    padding-top: 0px;
+    margin-top: 0px;
+    font-size: 11px;
+    padding-left: 55px;
+}
+.statuscontainer2 h4{
+    padding-top: 5px;
+    margin-top: 0px;
+    padding-left: 55px;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+}
+</style>
+<!--
+<script>var j = {{ status_update_user_friend_post.count }};
+
+        $(document).ready(function() {
+            for (var i =0 ;i<j;i++){
+            $(('#commentcontainer')[i]).hide();
+            $(('#sparsh')[i]).click(function() {
+                $(('#commentcontainer')[i]).toggle();
+            });}
+        });
+    </script>-->
+    <div class="statuscontainer">
+        {% if status_update_user_friend_post %}
+
+            {% for Status in status_update_user_friend_post %}
+
+            <div class="statuscontainer2">
+
+                    <a href="../profile/"><img class="profilepic" src="{{ MEDIA_URL }}{{ Status.posted_by.userprofile.picture }}"><h4> {{ Status.posted_by.first_name }} {{ Status.posted_by.last_name }}</a></h4><div class="postedon">on {{ Status.created_on }}</div>
+            <h3>{{ Status.status }}</h3>
+<!--jQuery script for comment-->
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+                <script>
+        $(document).ready(function() {
+            $(('#commentcontainer{{ Status.id }}')).hide();
+            $(('#sparsh{{ Status.id }}')).click(function () {
+                $(('#commentcontainer{{ Status.id }}')).toggle();
+            });
+        });
+    </script>
+                <!--jQuery script for like-->
+                <script>
+                    $(document).ready(function()
+                    {
+                        $('#like{{ Status.id }}').click(function(){
+                            $.ajax({
+                                type:"POST",
+                                url:"/like/",
+                                data:{
+                                        'like_status':$('#like_status{{ Status.id }}').val(),
+                                        'liked_by':$('#liked_by{{ Status.id }}').val(),
+                                        'csrfmiddlewaretoken':$("input[name=csrfmiddlewaretoken]").val()
+                                },
+                                success:searchSuccess,
+                                dataType:'html'
+                            });
+                        });
+
+                    function searchSuccess(data,textStatus,jqXHR) {
+
+    $(('#likes{{ Status.id }}')).html(data);
+                        };
+                        });</script>
+                <script>
+                    $(document).ready(function()
+                    {
+                            $.ajax({
+
+                                url:"/like/",
+                                data:{'like_status':$('#like_status{{ Status.id }}').val()},
+                                success:searchSuccess,
+                                dataType:'html'
+                            });
+
+
+                    function searchSuccess(data,textStatus,jqXHR) {
+
+    $(('#likes{{ Status.id }}')).html(data);
+                        };
+                        });
+                </script>
+
+                {% csrf_token %}
+                <input type="hidden" id="like_status{{ Status.id }}" value="{{ Status.id }}">
+                <input type="hidden" id="liked_by{{ Status.id }}" value="{{ user.id }}">
+                <style>
+                    #likes{{ Status.id }}{
+                        display: inline;
+                        margin-left:5px;
+                    }
+                </style>
+                <button id="like{{ Status.id }}">Like</button><div id="likes{{ Status.id }}">{{ likes_status.count }}</div>  &nbsp&nbsp&nbsp<button id="sparsh{{ Status.id }}">Comment</button>
+            <div id="commentcontainer{{ Status.id }}">
+                <input type="text"/>
+                <li>There are your comments.</li>
+                <li>2</li>
+            </div>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+     {% if status_updated == True %}
+     {% endif %}
+{% endif %}
+</div>
+</body>
+</html>

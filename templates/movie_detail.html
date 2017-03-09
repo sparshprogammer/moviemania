@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block body %}
+    <style>
+    h1{
+        text-align: left;
+    }
+    .image{
+        float: left;
+    }
+    .well{
+        margin-left: 15px;
+    }
+    </style>
+    <!DOCTYPE html>
+    <body>
+    <div class="well">
+        <!--<object width="420" height="315"
+data="{{ movie.img }}">
+</object>-->
+
+    <h1>{{ movie.title }}({{ movie.year }})</h1>
+    {{ movie.length }}min  |  {{ movie.genres }}  |  Rating:{{ movie.imdb_ratings }}<br><br></div>
+    <div class="col-sm-4 col-lg-2">
+        <div class="thumbnail">
+            <img class="image-responsive" src="{{ MEDIA_URL }}{{ movie.movie_img }}" height="250px" width="200px">
+    </div>
+        </div>
+    <div class="well">
+        <embed width="320" height="170"
+src="{{ movie.img }}" style="float: right"><h3>{{ movie.summary }}</h3>
+    <h4><b>Director:</b>&nbsp;&nbsp;{{ movie.director }}<br></h4>
+    <h4><b>Writer:</b>&nbsp;&nbsp;{{ movie.writer }}<br></h4>
+    <h4><b>Star Cast:</b>&nbsp;&nbsp;{{ movie.star_cast }}</h4></div>
+    </body>
+    </html>
+{% endblock %}
